@@ -38,6 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const desktopNavItems = [
     { id: 'dashboard', label: 'Inicio' },
+    { id: 'savings-route', label: 'Ruta de Ahorro' },
     { id: 'products', label: 'Precios' },
     { id: 'calculator', label: 'Calculadora' },
     { id: 'map', label: 'Mapa' },

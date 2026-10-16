@@ -10,6 +10,7 @@ import { CalendarView } from './components/CalendarView.tsx';
 import { ProfileView } from './components/ProfileView.tsx';
 import { MultiAgentView } from './components/MultiAgentView.tsx';
 import { HistoryView } from './components/HistoryView.tsx';
+import { SavingsRouteView } from './components/SavingsRouteView.tsx';
 import { LocationSelector } from './components/LocationSelector.tsx';
 import { PromoModal } from './components/PromoModal.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
@@ -20,6 +21,7 @@ import {
   PROMOTIONS_DATABASE 
 } from './data/promotions.ts';
 import { CATALOG_PRODUCTS, OBSERVED_PRICES } from './data/products.ts';
+import { initAuth } from './services/google-auth.ts';
 import { 
   CartProductEntry, 
   ObservedPrice, 
@@ -218,6 +220,23 @@ export default function App() {
     } catch {}
   }, [theme]);
 
+  // Listener de autenticación de Google Workspace / Firebase Auth
+  useEffect(() => {
+    const unsubscribe = initAuth((user) => {
+      setCurrentUser((prev) => ({
+        ...prev,
+        id: user.uid,
+        name: user.displayName || prev.name,
+        email: user.email || prev.email,
+        avatarUrl: user.photoURL || prev.avatarUrl,
+        isAuthenticated: true,
+      }));
+    });
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
+
   // Sincronizar en localStorage
   useEffect(() => {
     try {
@@ -389,6 +408,10 @@ export default function App() {
             onSelectRadius={(r) => setSearchRadiusKm(r)}
             onOpenPromoDetail={(promo) => setSelectedPromoForDetail(promo)}
             onOpenLocationModal={() => setIsLocationModalOpen(true)}
+            onScheduleInCalendar={(promo) => {
+              setCurrentTab('calendar');
+              setTabExtraData({ promoToSchedule: promo });
+            }}
           />
         )}
 
@@ -403,6 +426,23 @@ export default function App() {
           />
         )}
 
+        {currentTab === 'savings-route' && (
+          <SavingsRouteView
+            userLocation={userLocation}
+            promotions={PROMOTIONS_DATABASE}
+            userPaymentMethods={paymentMethods}
+            currentUser={currentUser}
+            onOpenAuthModal={() => setIsAuthModalOpen(true)}
+            onOpenLocationModal={() => setIsLocationModalOpen(true)}
+            initialCartItems={cartItems.map((c) => ({
+              name: c.product.name,
+              quantity: c.quantity,
+              category: c.product.category,
+              referencePrice: c.unitPrice,
+            }))}
+          />
+        )}
+
         {currentTab === 'calculator' && (
           <CalculatorView
             promotions={PROMOTIONS_DATABASE}
@@ -413,6 +453,7 @@ export default function App() {
             onRemoveCartItem={handleRemoveCartItem}
             onClearCart={handleClearCart}
             onOpenPromoDetail={(promo) => setSelectedPromoForDetail(promo)}
+            onNavigateToTab={(tab) => handleNavigateToTab(tab)}
           />
         )}
 
@@ -422,6 +463,8 @@ export default function App() {
             userLocation={userLocation}
             userPaymentMethods={paymentMethods}
             onOpenPromoDetail={(promo) => setSelectedPromoForDetail(promo)}
+            currentUser={currentUser}
+            onOpenAuthModal={() => setIsAuthModalOpen(true)}
           />
         )}
 
@@ -450,6 +493,8 @@ export default function App() {
             isOpenModal={isPurchaseModalOpen}
             onCloseModal={() => setIsPurchaseModalOpen(false)}
             onOpenModal={() => setIsPurchaseModalOpen(true)}
+            currentUser={currentUser}
+            onOpenAuthModal={() => setIsAuthModalOpen(true)}
           />
         )}
       </main>

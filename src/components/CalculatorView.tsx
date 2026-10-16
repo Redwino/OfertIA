@@ -13,7 +13,8 @@ import {
   AlertCircle, 
   CreditCard,
   TrendingDown,
-  Layers
+  Layers,
+  Navigation
 } from 'lucide-react';
 import { CartProductEntry, Category, Promotion, UserLocation, UserPaymentMethod } from '../types/index.ts';
 import { CATEGORY_LABELS } from '../data/promotions.ts';
@@ -29,6 +30,7 @@ interface CalculatorViewProps {
   onRemoveCartItem: (id: string) => void;
   onClearCart: () => void;
   onOpenPromoDetail: (promo: Promotion) => void;
+  onNavigateToTab?: (tab: string) => void;
 }
 
 export const CalculatorView: React.FC<CalculatorViewProps> = ({
@@ -40,6 +42,7 @@ export const CalculatorView: React.FC<CalculatorViewProps> = ({
   onRemoveCartItem,
   onClearCart,
   onOpenPromoDetail,
+  onNavigateToTab,
 }) => {
   const [activeTab, setActiveTab] = useState<'cart' | 'single_amount'>('cart');
   const [amount, setAmount] = useState<number>(100000);
@@ -290,6 +293,16 @@ export const CalculatorView: React.FC<CalculatorViewProps> = ({
                     </div>
                   )}
                 </div>
+              )}
+
+              {cartItems.length > 0 && onNavigateToTab && (
+                <button
+                  onClick={() => onNavigateToTab('savings-route')}
+                  className="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs rounded-2xl transition-all shadow-xs flex items-center justify-center gap-2"
+                >
+                  <Navigation className="w-4 h-4" />
+                  <span>Planificar Mi Ruta de Ahorro y Mapa con este Carrito</span>
+                </button>
               )}
             </div>
           </div>

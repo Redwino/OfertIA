@@ -17,7 +17,8 @@ import {
   Percent,
   Compass,
   Camera,
-  Search
+  Search,
+  Navigation
 } from 'lucide-react';
 import { Category, OptimizationGoal, Promotion, UserLocation, UserPaymentMethod } from '../types/index.ts';
 import { CATEGORY_LABELS } from '../data/promotions.ts';
@@ -158,6 +159,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Search className="w-3.5 h-3.5 text-emerald-600" />
               <span>Buscar Precios</span>
             </button>
+            <button
+              onClick={() => onNavigateToTab('savings-route')}
+              className="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-2xl transition-all shadow-xs flex items-center gap-2"
+            >
+              <Navigation className="w-3.5 h-3.5" />
+              <span>Mi Ruta de Ahorro</span>
+            </button>
           </div>
         </div>
 
@@ -208,6 +216,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Hero Card Destacada: Mi Ruta Inteligente de Ahorro */}
+      <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-3xl p-6 text-white shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5 border border-emerald-800/40">
+        <div className="space-y-1.5 max-w-xl">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-300">
+            <Sparkles className="w-4 h-4" />
+            <span>Nuevo Módulo OfertIA</span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
+            Planificador Inteligente de Compras y Ruta de Ahorro
+          </h2>
+          <p className="text-xs text-emerald-100/90 leading-relaxed">
+            Responde la pregunta central: <em>¿Qué comprar, en qué comercios, con qué medio de pago, en qué orden y qué día me conviene?</em> Optimiza simultáneamente precios, descuentos bancarios, carritos por sucursal, Google Maps y costos de traslado (Auto, Uber, Colectivo o A pie).
+          </p>
+        </div>
+
+        <button
+          onClick={() => onNavigateToTab('savings-route')}
+          className="px-5 py-3 rounded-2xl bg-white text-emerald-950 font-extrabold text-xs hover:bg-emerald-50 transition-all flex items-center justify-center gap-2 shadow-md shrink-0"
+        >
+          <Navigation className="w-4 h-4 text-emerald-700" />
+          <span>Armar Mi Ruta de Ahorro</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
       </div>
 
       {/* Control Bar: Objetivos de Optimización y Filtros */}

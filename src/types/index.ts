@@ -284,3 +284,128 @@ export interface MultiAgentAnalysis {
     cons: string;
   }>;
 }
+
+// ==========================================
+// MÓDULO: RUTA INTELIGENTE DE AHORRO Y CARRITOS
+// ==========================================
+
+export type TransportMode = 'car' | 'uber' | 'transit' | 'bike' | 'walk';
+
+export interface TransportSettings {
+  mode: TransportMode;
+  carConsumptionL100km: number; // Consumo en litros cada 100km (ej: 8.5)
+  fuelPricePerLiter: number;     // Precio nafta super/premium por litro (ej: 1150)
+  parkingFee: number;            // Estacionamiento estimado en $
+  tollFee: number;               // Peajes en $
+  transitFarePerTrip: number;    // Boleto colectivo/subte en $ (ej: 450)
+  maxTransportBudget: number;    // Presupuesto máximo de transporte
+}
+
+export type DayPlanningMode = 'today' | 'tomorrow' | 'specific_date' | 'best_day_week';
+export type RouteStrategy = 'max_savings' | 'min_time' | 'smart_balance';
+
+export interface RouteShoppingItem {
+  id: string;
+  name: string;
+  brand?: string;
+  category: Category;
+  quantity: number;
+  unit: string;
+  allowSubstitution?: boolean;
+  notes?: string;
+  referencePrice?: number;
+}
+
+export interface StoreCartItem {
+  product: RouteShoppingItem;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+  referencePrice: number;
+  savings: number;
+  confidenceScore: number;
+  priceSource: string;
+  observedAt: string;
+  promoCondition?: string;
+  isSubstitute?: boolean;
+}
+
+export interface StoreCart {
+  storeId: string;
+  storeName: string;
+  branchName: string;
+  address: string;
+  coordinates: GeoPoint;
+  openingHours?: string;
+  items: StoreCartItem[];
+  itemsSubtotal: number;
+  recommendedPaymentMethod: UserPaymentMethod | null;
+  appliedPromotion: Promotion | null;
+  discountAmount: number;
+  isCapReached: boolean;
+  reachCapAmount: number | null;
+  netPayable: number;
+  actualSavings: number;
+  distanceFromPrevKm: number;
+  travelTimeFromPrevMinutes: number;
+  proratedTransportCost: number;
+  netSavings: number;
+  splitRecommendation?: {
+    recommended: boolean;
+    reasoning: string;
+    firstPaymentMethod: string;
+    firstAmount: number;
+    secondPaymentMethod: string;
+    secondAmount: number;
+    extraGain: number;
+  };
+}
+
+export interface SingleStoreComparison {
+  storeName: string;
+  totalCart: number;
+  discountAmount: number;
+  transportCost: number;
+  netSavings: number;
+  netPayableTotal: number;
+  differenceVsMultiStore: number;
+  verdict: string;
+}
+
+export interface WeekDaySavingsProjection {
+  dayIndex: number;
+  dayName: string;
+  dateStr: string;
+  grossSavings: number;
+  netSavings: number;
+  isBestDay: boolean;
+  highlights: string;
+  bestBankPromo?: string;
+}
+
+export interface SavingsRoutePlan {
+  origin: GeoPoint;
+  date: string;
+  dayIndex: number;
+  dayName: string;
+  dayRecommendationReason?: string;
+  totalProductsCount: number;
+  totalCartGrossAmount: number;
+  totalGrossSavings: number;
+  totalTransportCost: number;
+  totalNetSavings: number;
+  totalDistanceKm: number;
+  totalTravelMinutes: number;
+  totalInStoreMinutes: number;
+  totalTripMinutes: number;
+  transportBudgetPercent: number;
+  transportMode: TransportMode;
+  transportModeDetails: string;
+  storeCarts: StoreCart[];
+  singleStoreComparisons: SingleStoreComparison[];
+  weekDaysComparison?: WeekDaySavingsProjection[];
+  googleMapsDirectionsUrl: string;
+  uberEstimate?: UberEstimate;
+  uberDeepLinkUrl: string;
+  recommendationVerdict: string;
+}
