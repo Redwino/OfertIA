@@ -1,0 +1,6 @@
+{
+  "name": "OfertIA - Asistente Inteligente de Compras y Ahorro",
+  "description": "Asistente inteligente mobile-first de ahorro, escaneo de tickets, comparación de precios y optimización de medios de pago.",
+  "requestFramePermissions": ["geolocation", "camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
